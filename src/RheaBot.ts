@@ -140,6 +140,15 @@ export class RheaBot {
                 }
             }
         });
+
+        setInterval(() => {
+            for (const [ executionId, commandInst ] of this.commandInteractions) {
+                const executionTime = commandInst.executionDate.getTime();
+                if (Date.now() - executionTime > 60 * 1000) {
+                    this.commandInteractions.delete(executionId);
+                }
+            }
+        }, 15000);
     }
 
     generateRandomHash() {

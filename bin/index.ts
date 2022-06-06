@@ -37,7 +37,7 @@ async function writeCommandsCached(hash: Buffer) {
             username: process.env.POSTGRES_USER || "admin",
             password: process.env.POSTGRES_PASSWORD || "1234",
             database: process.env.POSTGRES_DATABASE || "postgres",
-            ssl: "require"
+            ssl: "prefer"
         },
         redis: {
             host: process.env.REDIS_HOST as string || "127.0.0.1",
