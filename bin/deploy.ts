@@ -6,7 +6,7 @@ import child_process from "child_process";
 
 import dotenv from "dotenv";
 dotenv.config({
-    path: path.resolve(process.cwd(), "../.env")
+    path: path.resolve(process.cwd(), ".env")
 });
 
 function runCommandInDir(command: string, dir?: string) {

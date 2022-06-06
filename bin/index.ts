@@ -8,7 +8,7 @@ import fs from "fs/promises";
 import * as dtypes from "discord-api-types/v9";
 
 dotenv.config({
-    path: path.resolve(process.cwd(), "../.env")
+    path: path.resolve(process.cwd(), ".env")
 });
 
 import { BaseCommand, CommandMeta, getCommandMeta, RheaBot } from "../src";
