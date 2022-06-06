@@ -392,7 +392,7 @@ export class RheaDatabaseConnection {
             return undefined;
         }
 
-        await this.cache.setCached(`interaction.${executionId}`, interactionState, 10);
+        await this.cache.setCached(`interaction.${executionId}`, interactionState, 30);
         return interactionState as InteractionState;
     }
 
@@ -426,7 +426,7 @@ export class RheaDatabaseConnection {
             return;
         
         await this.cache.invalidateCached(`interaction.${executionId}`);
-        await this.cache.setCached(`interaction.${executionId}`, updatedRow, 10);
+        await this.cache.setCached(`interaction.${executionId}`, updatedRow, 30);
     }
 
     async deleteAllInformation(user: string|Account) {

@@ -144,7 +144,7 @@ export class RheaBot {
         setInterval(() => {
             for (const [ executionId, commandInst ] of this.commandInteractions) {
                 const executionTime = commandInst.executionDate.getTime();
-                if (Date.now() - executionTime > 60 * 1000) {
+                if (Date.now() - executionTime > 10 * 60 * 1000 /* 10 minutes */) {
                     this.commandInteractions.delete(executionId);
                 }
             }
