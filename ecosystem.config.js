@@ -8,7 +8,7 @@ module.exports = {
             name: "deploy",
             script: "dist/bin/deploy.js",
             env: {
-                PORT: 8002
+                PORT: 80
             }
         }
     ]
