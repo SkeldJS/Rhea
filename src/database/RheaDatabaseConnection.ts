@@ -46,6 +46,8 @@ export class RheaDatabaseConnection {
             ...postgresConfig
         });
 
+        this.postgresConnection()
+
         this.redisPubConnection = new ioredis(
             redisConfig.port || 6379,
             redisConfig.host || "127.0.0.1",
@@ -400,7 +402,7 @@ export class RheaDatabaseConnection {
         await this.postgresConnection`
             INSERT INTO interaction_states(user_id, guild_id, interaction_state, execution_id, command_name, command_version)
             VALUES (${userId}, ${guildId}, ${strState}, ${executionId}, ${commandName}, ${commandVersion})
-            ON CONFLICT ON CONSTRAINT interaction_states_pk
+            ON CONFLICT ON CONSTRAINT interaction_states_pkey
             DO UPDATE
                 SET interaction_state = ${strState}
         `;
