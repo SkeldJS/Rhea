@@ -87,7 +87,7 @@ app.post("/", async (req, res) => {
     
             const failedToBuild: [ string, Error ][] = [];
             console.log("Building bot..");
-            return runCommandInDir("yarn build", path.resolve(process.cwd()));
+            await runCommandInDir("yarn build", path.resolve(process.cwd()));
             
             console.log("Success!");
     
