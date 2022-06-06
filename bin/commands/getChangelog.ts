@@ -88,7 +88,7 @@ export default class ChangeLogCommand extends BaseCommand {
                 .setDescription(
                     versionLog.notes.map(note => {
                         return "**-** `" + note.description + "` (" + note.commits.map(commit => {
-                            return `[${commit.substring(0, 7)}](https://github.com/skeldjs/Hindenburg/commit/${commit})`
+                            return `[\`${commit.substring(0, 7)}\`](https://github.com/skeldjs/Hindenburg/commit/${commit})`
                         }).join(", ") + ")"
                     }).join("\n"))
             ],
