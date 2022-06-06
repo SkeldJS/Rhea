@@ -52,22 +52,9 @@ export default class ChangeLogCommand extends BaseCommand {
             : allVersions[currentVersionIdx - 1];
 
         const versionLog = this.state.versions[nextVersion];
-
-        const nextButton = this.buttons.get("next")!;
-        const previousButton = this.buttons.get("previous")!;
-
-        nextButton.setDisabled(nextVersion === allVersions[0]);
-        previousButton.setDisabled(nextVersion === allVersions[allVersions.length - 1]);
-        
         this.state.currentVersion = versionLog.version;
 
-        await interaction.update({
-            embeds: [ this.createEmbedForVersion(versionLog, nextVersion === allVersions[0]) ],
-            components: [
-                new MessageActionRow()
-                    .addComponents(nextButton, previousButton)
-            ]
-        });
+        await interaction.update(this.createMessageForVersion(versionLog));
     }
 
     @Components.Button("Previous", "PRIMARY")
@@ -80,34 +67,36 @@ export default class ChangeLogCommand extends BaseCommand {
             : allVersions[currentVersionIdx + 1];
 
         const versionLog = this.state.versions[previousVersion];
+        this.state.currentVersion = versionLog.version;
 
+        await interaction.update(this.createMessageForVersion(versionLog));
+    }
+
+    createMessageForVersion(versionLog: VersionChangeLog): discord.InteractionUpdateOptions {
+        const allVersions = Object.keys(this.state.versions);
         const nextButton = this.buttons.get("next")!;
         const previousButton = this.buttons.get("previous")!;
 
-        nextButton.setDisabled(previousVersion === allVersions[0]);
-        previousButton.setDisabled(previousVersion === allVersions[allVersions.length - 1]);
+        nextButton.setDisabled(versionLog.version === allVersions[0]);
+        previousButton.setDisabled(versionLog.version === allVersions[allVersions.length - 1]);
 
-        this.state.currentVersion = versionLog.version;
-
-        await interaction.update({
-            embeds: [ this.createEmbedForVersion(versionLog, previousVersion === allVersions[0]) ],
+        return {
+            embeds: [
+                new discord.MessageEmbed()
+                .setTitle("📜 Changelog for: " + versionLog.version)
+                .setColor(0x33609b)
+                .setDescription(
+                    versionLog.notes.map(note => {
+                        return "**-** `" + note.description + "` (" + note.commits.map(commit => {
+                            return `[${commit.substring(0, 7)}](https://github.com/skeldjs/Hindenburg/commit/${commit})`
+                        }).join(", ") + ")"
+                    }).join("\n"))
+            ],
             components: [
                 new MessageActionRow()
                     .addComponents(nextButton, previousButton)
             ]
-        });
-    }
-
-    createEmbedForVersion(version: VersionChangeLog, isLatest: boolean) {
-        return new discord.MessageEmbed()
-            .setTitle("📜 Changelog for: " + version.version)
-            .setColor(0x33609b)
-            .setDescription(
-                version.notes.map(note => {
-                    return "**-** `" + note.description + "` (" + note.commits.map(commit => {
-                        return `[${commit.substring(0, 7)}](https://github.com/skeldjs/Hindenburg/commit/${commit})`
-                    }).join(", ") + ")"
-                }).join("\n"));
+        }
     }
 
     @Execution()
@@ -130,23 +119,11 @@ export default class ChangeLogCommand extends BaseCommand {
                 });
             }
 
-            const nextButton = this.buttons.get("next")!;
-            const previousButton = this.buttons.get("previous")!;
-
-            nextButton.setDisabled(version === allVersions[0]);
-            previousButton.setDisabled(version === allVersions[allVersions.length - 1]);
-
             this.state = {
                 versions: changelog,
                 currentVersion: version
             }
-            await interaction.reply({
-                embeds: [ this.createEmbedForVersion(versionLog, version === allVersions[0]) ],
-                components: [
-                    new MessageActionRow()
-                        .addComponents(nextButton, previousButton)
-                ]
-            });
+            await interaction.reply(this.createMessageForVersion(versionLog) as discord.InteractionReplyOptions);
         } catch (e) {
             if (e instanceof got.HTTPError) {
                 return await interaction.reply({
