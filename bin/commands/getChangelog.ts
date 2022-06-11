@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType } from "discord-api-types";
-import discord, { MessageActionRow, MessageEmbed } from "discord.js";
+import discord from "discord.js";
 import got from "got";
 
 import {
@@ -93,7 +93,7 @@ export default class ChangeLogCommand extends BaseCommand {
                     }).join("\n"))
             ],
             components: [
-                new MessageActionRow()
+                new discord.MessageActionRow()
                     .addComponents(nextButton, previousButton)
             ]
         }
@@ -112,7 +112,7 @@ export default class ChangeLogCommand extends BaseCommand {
             if (!versionLog) {
                 return await interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new discord.MessageEmbed()
                             .setTitle("❌ Version does not exist: " + version)
                             .setColor(0xe54f47)
                     ]
@@ -123,12 +123,13 @@ export default class ChangeLogCommand extends BaseCommand {
                 versions: changelog,
                 currentVersion: version
             }
+            
             await interaction.reply(this.createMessageForVersion(versionLog) as discord.InteractionReplyOptions);
         } catch (e) {
             if (e instanceof got.HTTPError) {
                 return await interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new discord.MessageEmbed()
                             .setTitle("❌ Failed to get changelog")
                             .setColor(0xe54f47)
                             .setDescription("Couldn't get changelog from github repo, status code: `" + e.response.statusCode + "`")

@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node dist/bin/index.js",
     "dev": "ts-node bin/index.ts",
+    "devw": "ts-node-dev bin/index.ts",
     "build": "tsc -p ./",
+    "build:docs": "cd Hindenburg && yarn && mkdir docs && yarn typedoc src/index.ts --json docs/out.json",
     "watch": "tsc -w -p ./"
   },
   "devDependencies": {
@@ -18,6 +20,7 @@
     "eslint": "^8.5.0",
     "eslint-plugin-svelte3": "^3.2.1",
     "ts-node": "^10.4.0",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.5.4"
   },
   "dependencies": {
@@ -27,10 +30,13 @@
     "discord.js": "^13.3.1",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "fuse.js": "^6.6.2",
     "got": "11.8.3",
     "ioredis": "^4.28.2",
     "postgres": "^2.0.0-beta.11",
     "reflect-metadata": "^0.1.13",
+    "source-map": "^0.7.4",
+    "typedoc": "^0.22.17",
     "utf-8-validate": "^5.0.7"
   }
 }

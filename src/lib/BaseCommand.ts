@@ -13,4 +13,6 @@ export class BaseCommand {
         this.executionDate = new Date;
         this.buttons = new Map;
     }
+
+    static async setup() {}
 }

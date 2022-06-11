@@ -56,10 +56,11 @@ async function writeCommandsCached(hash: Buffer) {
             const meta = getCommandMeta(importedCommand);
     
             if (meta) {
+                await importedCommand.setup();
                 bot.registeredCommands.set(meta.name, importedCommand);
             }
         } catch (e) {
-            console.log("Failed to load %s:", file);
+            console.log("Failed to load command %s:", file);
             console.log(e);
         }
     }

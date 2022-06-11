@@ -100,5 +100,6 @@
   },
   "ts-node": {
     "files": true
-  }
+  },
+  "exclude": ["Hindenburg", "dist"]
 }
