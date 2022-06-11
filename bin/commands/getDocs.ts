@@ -357,8 +357,9 @@ export default class DocsCommand extends BaseCommand {
                 out += this.renderType(definition.type);
                 return out;
             }
+            case "Interface":
             case "Class": {
-                let out = "`class ";
+                let out = symbol.kindString === "Class" ? "`class " : "`interface ";
                 out += symbol.name;
                 if (definition.typeParameter) {
                     out += "<";
@@ -368,10 +369,14 @@ export default class DocsCommand extends BaseCommand {
                 if (definition.extendedTypes) {
                     out += " extends `";
                     out += definition.extendedTypes.map((type: any) => this.renderType(type)).join("`, ");
-                    out += "` {}`";
-                } else {
-                    out += " {}`";
+                    out += "`"
                 }
+                if (definition.implementedTypes) {
+                    out += " implements `";
+                    out += definition.implementedTypes.map((type: any) => this.renderType(type)).join("`, ");
+                    out += "`";
+                }
+                out += " {}`";
                 return out;
             }
             case "Property":
@@ -380,8 +385,6 @@ export default class DocsCommand extends BaseCommand {
                 return `\`enum ${symbol.name} {}\``;
             case "Enumeration member":
                 return `\`${symbol.name} = ${definition.defaultValue}\``;
-            case "Interface":
-                return `\`interface ${symbol.name} {}\``;
             case "Variable":
                 return `\`${symbol.flags?.isConst ? "const" : "let"} ${symbol.name}: \`${this.renderType(symbol.type)}`;
             case "Type alias":
