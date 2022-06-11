@@ -368,8 +368,10 @@ export default class DocsCommand extends BaseCommand {
                 if (definition.extendedTypes) {
                     out += " extends `";
                     out += definition.extendedTypes.map((type: any) => this.renderType(type)).join("`, ");
+                    out += "` {}`";
+                } else {
+                    out += "{}`";
                 }
-                out += "` {}`";
                 return out;
             }
             case "Property":
