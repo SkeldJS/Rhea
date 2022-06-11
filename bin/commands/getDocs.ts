@@ -349,7 +349,7 @@ export default class DocsCommand extends BaseCommand {
                 }
                 out += "(";
                 if (definition.parameters) {
-                    out += definition.parameters.map((parameter: any) => parameter.name + ": `" + this.renderType(parameter.type)).join("`, ");
+                    out += definition.parameters.map((parameter: any) => `${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: \`${this.renderType(parameter.type)}`).join("`, ");
                     out += "`): `";
                 } else {
                     out += "): `";
@@ -432,7 +432,7 @@ export default class DocsCommand extends BaseCommand {
             case "Function":
                 if (definition.parameters) {
                     embed.addField("Parameters", addZeroWidthSpaces(definition.parameters.map((parameter: any) => {
-                        return `**${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: ${this.renderType(parameter.type)}**${parameter.comment?.text ? " - " + parameter.comment.text : ""}`;
+                        return `**${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: **${this.renderType(parameter.type)}${parameter.comment?.text ? " - " + parameter.comment.text : ""}`;
                     }).join("\n")));
                 }
                 embed.addField("Return Type", addZeroWidthSpaces(`${this.renderType(definition.type, true)}${returnsComment ? " - " + returnsComment : ""}`));
