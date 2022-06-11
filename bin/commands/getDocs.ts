@@ -370,7 +370,7 @@ export default class DocsCommand extends BaseCommand {
                     out += definition.extendedTypes.map((type: any) => this.renderType(type)).join("`, ");
                     out += "` {}`";
                 } else {
-                    out += "{}`";
+                    out += " {}`";
                 }
                 return out;
             }
