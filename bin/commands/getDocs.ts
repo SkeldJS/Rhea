@@ -443,12 +443,12 @@ export default class DocsCommand extends BaseCommand {
                     const methodsRanked = this.rankOnInheritance(methods);
                     
                     if (methodsRanked.length > 50) {
-                        embed.addField("Properties", methodsRanked.slice(0, 50).map((methodSymbol: any) => {
+                        embed.addField("Methods", methodsRanked.slice(0, 50).map((methodSymbol: any) => {
                             const docsLink = DocsCommand.getDocsLink([ symbol, methodSymbol ]);
                             return `\`${methodSymbol.name}\``//`[\`${methodSymbol.name}\`](${docsLink})`;
                         }).join(", ") + ", ...");
                     } else {
-                        embed.addField("Properties", methodsRanked.map((methodSymbol: any) => {
+                        embed.addField("Methods", methodsRanked.map((methodSymbol: any) => {
                             const docsLink = DocsCommand.getDocsLink([ symbol, methodSymbol ]);
                             return `\`${methodSymbol.name}\``//`[\`${propertySymbol.name}\`](${docsLink})`;
                         }).join(", "));
