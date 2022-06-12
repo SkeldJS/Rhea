@@ -567,7 +567,12 @@ export default class DocsCommand extends BaseCommand {
         const embed = new discord.MessageEmbed()
             .setTitle("📘 Docs for " + symbolIdentifier + (definitions.length > 1 ? " (Definition " + (this.state.selectedDefinitionIdx + 1) + "/" + definitions.length + ")" : ""));
 
-        embed.setDescription(addZeroWidthSpaces(this.renderDefinition(symbol, definition)));
+        if (definition.comment?.tags?.find((tag: any) => tag.name === "deprecated")) {
+            embed.setDescription(addZeroWidthSpaces("~~" + this.renderDefinition(symbol, definition) + "~~"));
+            embed.addField("Deprecation Warning", "This function is deprecated in the latest version of Hindenburg");
+        } else {
+            embed.setDescription(addZeroWidthSpaces(this.renderDefinition(symbol, definition)));
+        }
     
         if (definition.comment?.shortText || definition.comment?.text) {
             const description = addZeroWidthSpaces(this.formatCommentText((definition.comment?.shortText || "") + "\n\n" + (definition.comment?.text || "")).trim());
