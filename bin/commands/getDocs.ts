@@ -473,6 +473,8 @@ export default class DocsCommand extends BaseCommand {
                         const description = addZeroWidthSpaces(this.formatCommentText((constructor.signatures[0].comment?.shortText || "") + "\n\n" + (constructor.signatures[0].comment?.text || "")).trim());
                         embed.addField("Description", description);
                     }
+
+                    this.renderSymbol(constructor, constructor.symbols[0], embed);
                 }
                 break;
             case "Property":
