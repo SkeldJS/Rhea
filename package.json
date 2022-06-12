@@ -9,7 +9,7 @@
     "dev": "ts-node bin/index.ts",
     "devw": "ts-node-dev bin/index.ts",
     "build": "tsc -p ./",
-    "build:docs": "cd Hindenburg && yarn && mkdir docs && yarn typedoc src/index.ts --json docs/out.json",
+    "build:docs": "cd Hindenburg && yarn && yarn typedoc src/index.ts --json docs/out.json",
     "watch": "tsc -w -p ./"
   },
   "devDependencies": {
