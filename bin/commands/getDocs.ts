@@ -223,6 +223,8 @@ export default class DocsCommand extends BaseCommand {
         switch (symbol.kindString) {
             case "Method":
                 return symbol.signatures;
+            case "Constructor":
+                return [ symbol.signatures[0] ];
             case "Class":
                 return [ symbol ];
             case "Property":
@@ -336,7 +338,8 @@ export default class DocsCommand extends BaseCommand {
     renderDefinition(symbol: any, definition: any) {
         switch (symbol.kindString) {
             case "Method":
-            case "Function": {
+            case "Function":
+            case "Constructor": {
                 let out = "`";
                 if (symbol.flags?.isStatic) {
                     out += "static ";
@@ -380,7 +383,7 @@ export default class DocsCommand extends BaseCommand {
                 return out;
             }
             case "Property":
-                return `\`${symbol.flags?.isStatic ? "static " : ""}${symbol.name}: \`${this.renderType(symbol.type)}`;
+                return `\`${symbol.flags?.isStatic ? "static " : ""}${symbol.flags?.isReadonly ? "readonly " : ""}${symbol.name}: \`${this.renderType(symbol.type)}`;
             case "Enumeration":
                 return `\`enum ${symbol.name} {}\``;
             case "Enumeration member":
@@ -411,25 +414,13 @@ export default class DocsCommand extends BaseCommand {
         return [...symbols].sort((a, b) => this.getInheritanceDepth(a) - this.getInheritanceDepth(b));
     }
 
-    renderSymbol(symbol: any, definitionIdx: number, embed: discord.MessageEmbed) {
-        const definitions = this.getDefinitions(symbol);
-        const definition = definitions[definitionIdx];
-
-        if (!definition)
-            return;
-
-        embed.setDescription(addZeroWidthSpaces(this.renderDefinition(symbol, definition)));
-        
-        if (definition.comment?.shortText || definition.comment?.text) {
-            const description = addZeroWidthSpaces(this.formatCommentText((definition.comment?.shortText || "") + "\n\n" + (definition.comment?.text || "")).trim());
-            embed.addField("Description", description);
-        }
-
+    renderSymbol(symbol: any, definition: any, embed: discord.MessageEmbed) {
         const returnsComment = definition.comment?.returns;
         const examples = definition.comment?.tags?.filter((tag: any) => tag.tag === "example") || [];
         switch (symbol.kindString) {
             case "Method":
             case "Function":
+            case "Constructor":
                 if (definition.parameters) {
                     embed.addField("Parameters", addZeroWidthSpaces(definition.parameters.map((parameter: any) => {
                         return `**${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: **${this.renderType(parameter.type)}${parameter.comment?.text ? " - " + parameter.comment.text : ""}`;
@@ -473,7 +464,16 @@ export default class DocsCommand extends BaseCommand {
                         }).join(", "));
                     }
                 }
+
+                const constructor = symbol.children.filter((child: any) => child.kindString === "Constructor");
+                if (constructor && constructor.signatures[0]) {
                     embed.addField("Constructor", addZeroWidthSpaces(this.renderDefinition(constructor, constructor.signatures[0])));
+                
+                    if (constructor.signatures[0].comment?.shortText || constructor.signatures[0].comment?.text) {
+                        const description = addZeroWidthSpaces(this.formatCommentText((constructor.signatures[0].comment?.shortText || "") + "\n\n" + (constructor.signatures[0].comment?.text || "")).trim());
+                        embed.addField("Description", description);
+                    }
+                }
                 break;
             case "Property":
                 break;
@@ -552,10 +552,26 @@ export default class DocsCommand extends BaseCommand {
         }));
 
         const definitions = this.getDefinitions(symbol);
+        const definition = definitions[this.state.selectedDefinitionIdx];
+
+        const symbolIdentifier = symbols.map((symbol: any) => symbol.name).join(".");
+
+        if (!definition)
+            return new discord.MessageEmbed()
+                .setTitle("❌ No definitions for: " + symbolIdentifier)
+                .setColor(0xe54f47)
+                .setDescription("This might be a mistake, ask @weakeyes#0143 to fix it");
 
         const embed = new discord.MessageEmbed()
-            .setTitle("📘 Docs for " + symbols.map((symbol: any) => symbol.name).join(".") + " (Definition " + (this.state.selectedDefinitionIdx + 1) + "/" + definitions.length + ")");
+            .setTitle("📘 Docs for " + symbolIdentifier + (definitions.length > 1 ? " (Definition " + (this.state.selectedDefinitionIdx + 1) + "/" + definitions.length + ")" : ""));
 
+        embed.setDescription(addZeroWidthSpaces(this.renderDefinition(symbol, definition)));
+    
+        if (definition.comment?.shortText || definition.comment?.text) {
+            const description = addZeroWidthSpaces(this.formatCommentText((definition.comment?.shortText || "") + "\n\n" + (definition.comment?.text || "")).trim());
+            embed.addField("Description", description);
+        }
+        
         this.renderSymbol(symbol, this.state.selectedDefinitionIdx, embed);
 
         embed.addField("Implemented in:", sources.join("\n"));
