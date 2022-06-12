@@ -371,12 +371,12 @@ export default class DocsCommand extends BaseCommand {
                 }
                 if (definition.extendedTypes) {
                     out += " extends `";
-                    out += definition.extendedTypes.map((type: any) => this.renderType(type)).join("`, ");
+                    out += definition.extendedTypes.map((type: any) => this.renderType(type)).join("`, `");
                     out += "`"
                 }
                 if (definition.implementedTypes) {
                     out += " implements `";
-                    out += definition.implementedTypes.map((type: any) => this.renderType(type)).join("`, ");
+                    out += definition.implementedTypes.map((type: any) => this.renderType(type)).join("`, `");
                     out += "`";
                 }
                 out += " {}`";
