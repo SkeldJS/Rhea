@@ -465,7 +465,7 @@ export default class DocsCommand extends BaseCommand {
                     }
                 }
 
-                const constructor = symbol.children.filter((child: any) => child.kindString === "Constructor");
+                const constructor = symbol.children.find((child: any) => child.kindString === "Constructor");
                 if (constructor && constructor.signatures[0]) {
                     embed.addField("Constructor", addZeroWidthSpaces(this.renderDefinition(constructor, constructor.signatures[0])));
                 
