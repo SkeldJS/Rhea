@@ -473,6 +473,7 @@ export default class DocsCommand extends BaseCommand {
                         }).join(", "));
                     }
                 }
+                    embed.addField("Constructor", addZeroWidthSpaces(this.renderDefinition(constructor, constructor.signatures[0])));
                 break;
             case "Property":
                 break;
