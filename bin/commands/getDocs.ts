@@ -574,7 +574,7 @@ export default class DocsCommand extends BaseCommand {
             embed.addField("Description", description);
         }
         
-        this.renderSymbol(symbol, this.state.selectedDefinitionIdx, embed);
+        this.renderSymbol(symbol, definition, embed);
 
         embed.addField("Implemented in:", sources.join("\n"));
 
