@@ -474,7 +474,7 @@ export default class DocsCommand extends BaseCommand {
                         embed.addField("Description", description);
                     }
 
-                    this.renderSymbol(constructor, constructor.symbols[0], embed);
+                    this.renderSymbol(constructor, constructor.signatures[0], embed);
                 }
                 break;
             case "Property":
