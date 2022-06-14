@@ -397,7 +397,7 @@ export default class DocsCommand extends BaseCommand {
             case "Accessor":
                 switch (definition.kindString) {
                     case "Get signature":
-                        return `\`${symbol.flags?.isStatic ? "static " : ""}get ${symbol.name}(): \`${this.renderType(symbol.type)}`;
+                        return `\`${symbol.flags?.isStatic ? "static " : ""}get ${symbol.name}(): \`${this.renderType(definition.type)}`;
                     case "Set signature":
                         let out = "`";
                         if (symbol.flags?.isStatic) {
