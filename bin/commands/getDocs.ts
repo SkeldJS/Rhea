@@ -241,6 +241,8 @@ export default class DocsCommand extends BaseCommand {
                 return symbol.signatures;
             case "Type alias":
                 return [ symbol ];
+            case "Accessor":
+                return [...(symbol.getSignature || []), ...(symbol.setSignature || [])];
         }
         return [];
     }
@@ -392,6 +394,31 @@ export default class DocsCommand extends BaseCommand {
                 return `\`${symbol.flags?.isConst ? "const" : "let"} ${symbol.name}: \`${this.renderType(symbol.type)}`;
             case "Type alias":
                 return `\`type ${symbol.name} = \`${this.renderType(symbol.type)}`;
+            case "Accessor":
+                switch (definition.kindString) {
+                    case "Get signature":
+                        return `\`${symbol.flags?.isStatic ? "static " : ""}get ${symbol.name}(): \`${this.renderType(symbol.type)}`;
+                    case "Set signature":
+                        let out = "`";
+                        if (symbol.flags?.isStatic) {
+                            out += "static ";
+                        }
+                        out += "set " + definition.name;
+                        if (definition.typeParameter) {
+                            out += "<";
+                            out += definition.typeParameter.map((type: any) => type.name + (type.type ? " extends `" + this.renderType(type.type) + "`" : "")).join("`, ");
+                            out += ">";
+                        }
+                        out += "(";
+                        if (definition.parameters) {
+                            out += definition.parameters.map((parameter: any) => `${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: \`${this.renderType(parameter.type)}`).join("`, ");
+                            out += "`): `";
+                        } else {
+                            out += "): `";
+                        }
+                        out += this.renderType(definition.type);
+                        return out;
+                }
         }
 
         return "`?`";
@@ -493,6 +520,14 @@ export default class DocsCommand extends BaseCommand {
             case "Variable":
                 break;
             case "Type alias":
+                break;
+            case "Accessor":
+                if (definition.parameters) {
+                    embed.addField("Parameters", addZeroWidthSpaces(definition.parameters.map((parameter: any) => {
+                        return `**${parameter.name}${parameter.flags?.isOptional ? "?" : ""}: **${this.renderType(parameter.type)}${parameter.comment?.text ? " - " + parameter.comment.text : ""}`;
+                    }).join("\n")));
+                }
+                embed.addField("Return Type", addZeroWidthSpaces(`${this.renderType(definition.type, true)}${returnsComment ? " - " + returnsComment : ""}`));
                 break;
         }
         
