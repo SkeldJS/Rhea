@@ -1,3 +1,6 @@
 [submodule "Hindenburg"]
 	path = Hindenburg
 	url = https://github.com/skeldjs/Hindenburg
+[submodule "SkeldJS"]
+	path = SkeldJS
+	url = https://github.com/skeldjs/SkeldJS

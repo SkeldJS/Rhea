@@ -1,0 +1,26 @@
+{
+  "name": "@skeldjs/rhea-github",
+  "packageManager": "yarn@3.0.2",
+  "types": "./index.ts",
+  "scripts": {
+    "start": "node dist/bin/index.js",
+    "dev": "ts-node bin/index.ts",
+    "devw": "ts-node-dev bin/index.ts",
+    "build": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "publishConfig": {
+    "types": "./dist/index.d.ts"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "ts-node": "latest",
+    "typescript": "latest"
+  },
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "pino": "^8.0.0",
+    "pino-pretty": "^8.0.0"
+  }
+}
