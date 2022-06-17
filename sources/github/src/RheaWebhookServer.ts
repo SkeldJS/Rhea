@@ -15,7 +15,7 @@ export class RheaWebhookServer {
         this.expressServer.use(express.json());
 
         this.expressServer.post("/rhea", webhook(), (req, res) => {
-            console.log(req.body);
+            console.log(req.body, req.header("X-GitHub-Event"));
             this.logger.info("Got webhook post");
         });
     }
