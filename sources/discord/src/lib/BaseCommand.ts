@@ -1,12 +1,12 @@
 import discord from "discord.js";
-import { RheaBot } from "../RheaBot";
+import { RheaDiscordBot } from "../RheaDiscordBot";
 
 export class BaseCommand {
     executionDate: Date;
     buttons: Map<string, discord.MessageButton>;
 
     constructor(
-        public readonly bot: RheaBot,
+        public readonly bot: RheaDiscordBot,
         public readonly executionId: string,
         public state: any
     ) {

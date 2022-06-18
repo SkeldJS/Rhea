@@ -7,11 +7,12 @@ import fs from "fs/promises";
 
 import * as dtypes from "discord-api-types/v9";
 
+import { BaseCommand, CommandMeta, getCommandMeta, RheaDiscordBot } from "@skeldjs/rhea-discord";
+import { BaseEvent, getEventMeta, RheaWebhookServer, webhook } from "@skeldjs/rhea-github";
+
 dotenv.config({
     path: path.resolve(process.cwd(), ".env")
 });
-
-import { BaseCommand, CommandMeta, getCommandMeta, RheaBot } from "../src";
 
 async function getCommandsCached() {
     try {
@@ -30,7 +31,7 @@ async function writeCommandsCached(hash: Buffer) {
 }
 
 (async () => {
-    const bot = new RheaBot({
+    const discordBot = new RheaDiscordBot({
         postgres: {
             host: process.env.POSTGRES_HOST as string || "127.0.0.1",
             port: parseInt(process.env.POSTGRES_PORT || "5379"),
@@ -46,8 +47,11 @@ async function writeCommandsCached(hash: Buffer) {
         }
     }, process.env.GUILD_ID as string|undefined);
 
-    const files = await fs.readdir(path.resolve(__dirname, "./commands"));
-    for (const file of files) {
+    const webhookServer = new RheaWebhookServer;
+    webhookServer.listen(process.env.PORT ? parseInt(process.env.PORT) : 8000);
+
+    const commandFiles = await fs.readdir(path.resolve(__dirname, "./commands"));
+    for (const file of commandFiles) {
         if (file.endsWith(".js.map") || file.endsWith(".d.ts"))
             continue;
 
@@ -57,7 +61,7 @@ async function writeCommandsCached(hash: Buffer) {
     
             if (meta) {
                 await importedCommand.setup();
-                bot.registeredCommands.set(meta.name, importedCommand);
+                discordBot.registeredCommands.set(meta.name, importedCommand);
             }
         } catch (e) {
             console.log("Failed to load command %s:", file);
@@ -65,13 +69,33 @@ async function writeCommandsCached(hash: Buffer) {
         }
     }
     
-    bot.client.once("ready", async () => {
-        if (!bot.client.isReady())
+    const eventFiles = await fs.readdir(path.resolve(__dirname, "./events"));
+    for (const file of eventFiles) {
+        if (file.endsWith(".js.map") || file.endsWith(".d.ts"))
+            continue;
+
+        try {
+            const { default: importedEvent } = await import(path.resolve(__dirname, "./events", file)) as { default: typeof BaseEvent };
+            const meta = getEventMeta(importedEvent);
+    
+            if (meta) {
+                await importedEvent.setup();
+                const eventName = meta.eventName + "@" + (meta.repoName || "global");
+                webhookServer.registeredEvents.set(eventName, importedEvent);
+            }
+        } catch (e) {
+            console.log("Failed to load event %s:", file);
+            console.log(e);
+        }
+    }
+    
+    discordBot.client.once("ready", async () => {
+        if (!discordBot.client.isReady())
             return;
 
         const addCommandMeta: CommandMeta[] = [];
 
-        for (const [ , command ] of bot.registeredCommands) {
+        for (const [ , command ] of discordBot.registeredCommands) {
             addCommandMeta.push(getCommandMeta(command)!);
         }
 
@@ -82,16 +106,16 @@ async function writeCommandsCached(hash: Buffer) {
             await writeCommandsCached(commandsHash);
             console.log("Uploading commands..");
 
-            if (bot.testingGuildId) {
-                await bot.rest.put(
-                    dtypes.Routes.applicationGuildCommands(bot.client.application.id, bot.testingGuildId),
+            if (discordBot.testingGuildId) {
+                await discordBot.rest.put(
+                    dtypes.Routes.applicationGuildCommands(discordBot.client.application.id, discordBot.testingGuildId),
                     {
                         body: addCommandMeta
                     }
                 );
             } else {
-                await bot.rest.put(
-                    dtypes.Routes.applicationCommands(bot.client.application.id),
+                await discordBot.rest.put(
+                    dtypes.Routes.applicationCommands(discordBot.client.application.id),
                     {
                         body: addCommandMeta
                     }
@@ -101,6 +125,6 @@ async function writeCommandsCached(hash: Buffer) {
         console.log("Client ready!");
     });
     
-    bot.client.login(process.env.BOT_TOKEN as string);
-    bot.rest.setToken(process.env.BOT_TOKEN as string || "");
+    discordBot.client.login(process.env.BOT_TOKEN as string);
+    discordBot.rest.setToken(process.env.BOT_TOKEN as string || "");
 })();

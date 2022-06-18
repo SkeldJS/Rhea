@@ -10,7 +10,7 @@ import {
     Command,
     Components,
     Execution
-} from "../../src";
+} from "@skeldjs/rhea-discord";
 
 interface SymbolSourceInfo {
     fileName: string;

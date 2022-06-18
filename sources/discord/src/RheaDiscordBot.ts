@@ -11,7 +11,7 @@ import {
     getExecutionMethods
 } from "./lib";
 
-export interface RheaBotConfig {
+export interface RheaDiscordBotConfig {
     postgres: {
         host: string;
         port: number;
@@ -27,7 +27,7 @@ export interface RheaBotConfig {
     };
 }
 
-export class RheaBot {
+export class RheaDiscordBot {
     client: discord.Client;
     rest: REST;
 
@@ -38,7 +38,7 @@ export class RheaBot {
     
     private randomBuffer: Buffer;
 
-    constructor(config: Partial<RheaBotConfig>, public readonly testingGuildId?: string) {
+    constructor(config: Partial<RheaDiscordBotConfig>, public readonly testingGuildId?: string) {
         this.client = new discord.Client({
             intents: [ discord.Intents.FLAGS.GUILDS ]
         });

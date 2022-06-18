@@ -19,8 +19,11 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
+    "@octokit/auth-app": "^3.6.1",
+    "@octokit/rest": "^18.12.0",
     "dotenv": "^16.0.1",
     "pino": "^8.0.0",
-    "pino-pretty": "^8.0.0"
+    "pino-pretty": "^8.0.0",
+    "reflect-metadata": "^0.1.13"
   }
 }

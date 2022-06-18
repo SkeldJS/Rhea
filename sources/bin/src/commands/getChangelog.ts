@@ -7,7 +7,7 @@ import {
     Command,
     Execution,
     Components
-} from "../../src";
+} from "@skeldjs/rhea-discord";
 
 export interface VersionChangeLogNote {
     description: string;
