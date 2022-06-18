@@ -391,7 +391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@skeldjs/rhea-discord@workspace:sources/discord":
+"@skeldjs/rhea-discord@workspace:*, @skeldjs/rhea-discord@workspace:sources/discord":
   version: 0.0.0-use.local
   resolution: "@skeldjs/rhea-discord@workspace:sources/discord"
   dependencies:
@@ -419,7 +419,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@skeldjs/rhea-github@workspace:sources/github":
+"@skeldjs/rhea-github@workspace:*, @skeldjs/rhea-github@workspace:sources/github":
   version: 0.0.0-use.local
   resolution: "@skeldjs/rhea-github@workspace:sources/github"
   dependencies:
@@ -441,6 +441,8 @@ __metadata:
   dependencies:
     "@discordjs/rest": ^0.2.0-canary.0
     "@octokit/webhooks-types": ^5.8.0
+    "@skeldjs/rhea-discord": "workspace:*"
+    "@skeldjs/rhea-github": "workspace:*"
     "@types/express": ^4.17.13
     "@types/got": ^9.6.12
     "@types/ioredis": ^4.28.5
