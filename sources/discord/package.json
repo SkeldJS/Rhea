@@ -2,6 +2,7 @@
   "name": "@skeldjs/rhea-discord",
   "packageManager": "yarn@3.0.2",
   "types": "./index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "start": "node dist/bin/index.js",
     "dev": "ts-node bin/index.ts",
