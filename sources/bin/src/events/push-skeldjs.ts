@@ -6,7 +6,7 @@ import fs from "fs/promises";
 
 import { runCommandInDir } from "../util/runCommandInDir";
 
-const versionRegex = /^(\d\.\d\.\d).+/;
+const versionRegex = /^(\d+\.\d+\.\d+).+/;
 
 @Event("SkeldJS/SkeldJS", "push")
 export default class PushToSkeldjsEvent extends BaseEvent<webhooks.PushEvent> {
@@ -27,7 +27,7 @@ export default class PushToSkeldjsEvent extends BaseEvent<webhooks.PushEvent> {
 
         const tagPushed = this.requestBody.ref.split("/")[2];
         if (!versionRegex.test(tagPushed)) {
-            this.logger.info("Bad tag pushed: %s");
+            this.logger.info("Bad tag pushed: %s", tagPushed);
             return;
         }
 

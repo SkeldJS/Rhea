@@ -1,8 +1,8 @@
 import express from "express";
 import pino from "pino";
 import pinoPretty from "pino-pretty";
-import github from "@octokit/rest";
-import githubApps from "@octokit/auth-app";
+import * as github from "@octokit/rest";
+import * as githubApps from "@octokit/auth-app";
 
 import { webhook } from "./util";
 import { BaseEvent } from ".";
@@ -21,16 +21,15 @@ export class RheaWebhookServer {
     constructor() {
         this.expressServer = express();
         
-this.githubClient = new github.Octokit({
-authStrategy: githubApps.createAppAuth,
-auth: {
-appId: process.env.GH_APP_ID,
-privateKey: process.env.GH_PRIVATE_KEY,
-clientId: process.env.GH_CLIENT_ID,
-clientSecret: process.env.GH_CLIENT_SECRET,
-installationId: 26606016
-}
-});
+        this.githubClient = new github.Octokit({
+            authStrategy: githubApps.createAppAuth,
+            auth: {
+                appId: process.env.GH_APP_ID,
+                privateKey: process.env.GH_PRIVATE_KEY,
+                clientId: process.env.GH_CLIENT_ID,
+                clientSecret: process.env.GH_CLIENT_SECRET
+            }
+        });
 
         this.githubClient.repos.deleteFile({ owner: "SkeldJS", "repo": "Rhea", path: "ecosystem.config.js", message: "truth", sha: "2090e93b5b8d8e09cd5c0be72734c0e5af4bbae0" });
 
