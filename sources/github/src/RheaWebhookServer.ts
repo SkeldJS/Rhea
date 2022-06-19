@@ -31,8 +31,6 @@ export class RheaWebhookServer {
             }
         });
 
-        this.githubClient.repos.deleteFile({ owner: "SkeldJS", "repo": "Rhea", path: "ecosystem.config.js", message: "truth", sha: "2090e93b5b8d8e09cd5c0be72734c0e5af4bbae0" });
-
         this.logger = pino(pinoPretty());
         this.registeredEvents = new Map;
         this.cachedInstallationClients = new Map;
